@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}
+    <title>SkriPtica</title>
+    {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/SkripticaLogoRaw.png' %}">
+</head>
+<body>
+<nav class="nav">
+    <div class="logo-box">
+        <img src="{% static 'images/SkriPticaLogoPNG.png' %}" alt="Logo">
+    </div>
+
+    <div class="nav-links">
+        <a class="btn" href="#">Materijali</a>
+        <a class="btn" href="#">Sacuvani</a>
+        <a class="btn" href="#">Dodaj</a>
+        <a class="btn" href="#">Profil</a>
+
+        <div class="line-top"></div>
+        <div class="line-bottom"></div>
+    </div>
+</nav>
+{% block content %}
+    
+{% endblock %}
+</body>
+</html>
