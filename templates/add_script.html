@@ -9,7 +9,14 @@
 {% endblock %}
 
 {% block content %}
-<from method="post">
+    
+{% if error %}
+    <div style="color: red; border: 1px solid red; padding: 10px; margin: 10px;">
+        {{ error }}
+    </div>
+{% endif %}
+    
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="Columns">
         <div class="ColumnInputs">
@@ -19,7 +26,9 @@
 
         <div class="ColumnDropDowns">
 
-            <input type="text" name="kategorija" class="InputAddScript" placeholder="Unesite kategoriju!"/>
+            <input id="inputKategorija" type="text" name="kategorija" class="InputAddScript" placeholder="Unesite kategoriju!"/>
+            <input type="hidden" name="idKat" id="selected-category-id">
+            
             <section class="form-module">
                 <div class="form-group">
                     <div class="file-upload-wrapper">
@@ -44,10 +53,11 @@
     <div class="Buttons">
         <button class="ButtonSubmit" type="submit">Submit</button>
     </div>
-</from>
+</form>
 
 {% endblock %}
 
 {% block script %}
     <script src="{% static 'js/DropPDF.js' %}"></script>
+    <script src="{% static 'js/DynamicSearch.js' %}"></script>
 {% endblock %}

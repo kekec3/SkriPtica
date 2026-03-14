@@ -17,10 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from materials import views
 from materials.views import read_script, add_script
 
 urlpatterns = [
     path('read_script/<int:script_id>/', read_script, name='read_script'),
 
-    path('add_script/', add_script, name='add_script'),
+    path('add_script/', views.add_script, name='add_script'),
+
+    path('api/categories/', views.category_autocomplete, name='category_autocomplete'),
 ]

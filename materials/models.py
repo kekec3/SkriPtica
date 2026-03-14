@@ -25,10 +25,10 @@ class Skripta(models.Model):
     idskr = models.AutoField(db_column='IdSkr', primary_key=True)  # Field name made lowercase.
     idkor = models.ForeignKey('accounts.Korisnik', models.DO_NOTHING, db_column='IdKor', blank=True, null=True)  # Field name made lowercase.
     idkat = models.ForeignKey(Kategorija, models.DO_NOTHING, db_column='IdKat')  # Field name made lowercase.
-    naziv = models.CharField(db_column='Naziv', max_length=20)  # Field name made lowercase.
-    opis = models.CharField(db_column='Opis', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    fajl = models.TextField(db_column='Fajl')  # Field name made lowercase.
-    odobrena = models.IntegerField(db_column='Odobrena')  # Field name made lowercase.
+    naziv = models.CharField(db_column='Naziv', max_length=50)  # Field name made lowercase.
+    opis = models.CharField(db_column='Opis', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    fajl = models.FileField(db_column='Fajl', upload_to='skripte/')  # Field name made lowercase.
+    odobrena = models.IntegerField(db_column='Odobrena', default=0)  # Field name made lowercase.
 
     class Meta:
         managed = True
