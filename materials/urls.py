@@ -17,6 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-urlpatterns = [
+from materials.views import read_script, add_script
 
+urlpatterns = [
+    path('read_script/<int:script_id>/', read_script, name='read_script'),
+
+    path('add_script/', add_script, name='add_script'),
 ]

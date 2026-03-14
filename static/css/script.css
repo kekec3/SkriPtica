@@ -1,0 +1,227 @@
+
+.MainContentCentered{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h2{
+    margin: 10px;
+}
+
+h4{
+    margin: 10px;
+}
+
+.ScriptDesc{
+    padding: 10px;
+    border: 2px solid darkslateblue;
+    width: 500px;
+}
+
+.ScriptDesc p{
+    text-align: center;
+}
+
+.InputAddScript{
+  max-width: 190px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  box-shadow: 2.5px 3px 0 #000;
+  outline: none;
+  transition: ease 0.25s;
+  margin: 10px
+}
+
+.InputAddScript:focus {
+  box-shadow: 5.5px 7px 0 black;
+}
+.textAreaOpis{
+  width: 400px;
+    height: 450px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  box-shadow: 2.5px 3px 0 #000;
+  outline: none;
+  transition: ease 0.25s;
+  margin: 10px
+}
+.textAreaOpis:focus {
+  box-shadow: 5.5px 7px 0 black;
+}
+
+.ColumnDropDowns{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Columns{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 10px;
+    padding: 12px;
+}
+
+.ColumnInputs{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Dropdowns{
+  width: 220px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  box-shadow: 2.5px 3px 0 #000;
+  outline: none;
+  transition: ease 0.25s;
+  margin: 10px;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+}
+
+.Dropdowns:focus{
+  box-shadow: 5.5px 7px 0 black;
+}
+
+.chosePDF{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.InputFile{
+  max-width: 220px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  box-shadow: 2.5px 3px 0 #000;
+  outline: none;
+  transition: ease 0.25s;
+  margin: 10px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.InputFile:hover{
+  box-shadow: 5.5px 7px 0 black;
+}
+
+.Buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ButtonSubmit{
+  padding: 0.875rem 1.4rem;
+  font-size: 1rem;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 2.5px 3px 0 #000;
+  outline: none;
+  transition: ease 0.25s;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.ButtonSubmit:hover{
+  box-shadow: 5.5px 7px 0 black;
+}
+
+.ButtonSubmit:active{
+  transform: translate(2px,2px);
+  box-shadow: 1px 1px 0 black;
+}
+
+.file-upload-wrapper{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+/* Glavna zona za upload */
+.file-upload-label{
+    width:400px;
+    cursor:pointer;
+    background:white;
+    padding:30px 20px;
+
+    border:1.5px solid #000;
+    border-radius:0.5rem;
+    box-shadow:2.5px 3px 0 #000;
+
+    transition:ease 0.25s;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* Hover efekat kao kod inputa */
+.file-upload-label:hover{
+    box-shadow:5.5px 7px 0 black;
+}
+
+/* Sakrij default file input */
+.file-upload-label input{
+    display:none;
+}
+
+.file-upload-design{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+}
+
+/* Ikonica */
+.file-upload-design svg{
+    fill:black;
+    margin-bottom:10px;
+}
+
+/* Tekst */
+.file-upload-design p{
+    color:black;
+    font-size:0.9rem;
+    margin:0;
+}
+
+/* Dugme Browse */
+.browse-button{
+    margin-top:10px;
+
+    border:1.5px solid #000;
+    border-radius:0.5rem;
+
+    background:white;
+    padding:8px 20px;
+
+    font-weight:500;
+    font-size:0.85rem;
+
+    box-shadow:2.5px 3px 0 #000;
+
+    transition:ease 0.25s;
+}
+
+.browse-button:hover{
+    box-shadow:5.5px 7px 0 black;
+}

@@ -1,0 +1,28 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+    <title>Read</title>
+{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href= "{% static 'css/script.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="MainContentCentered">
+        <!--<h2>{{script.Naziv}}</h2> -->
+        <h2>Naziv skripte</h2>
+
+        <h4>Opis</h4>
+        <div class="ScriptDesc">
+            <p class="ScriptDescParagraph">
+                <!-- {{script.opis}} -->
+                Ova skripta je napisana od strane studenta koji je 10.0!
+                Najbolji nacin da se spremi predmet PSI.
+
+            </p>
+        </div>
+
+
+
+    </div>
+{% endblock %}

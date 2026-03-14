@@ -7,8 +7,11 @@
     {% block title %}
     <title>SkriPtica</title>
     {% endblock %}
+    {% block style %}
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    {% endblock %}
     <link rel="icon" type="image/png" href="{% static 'images/SkripticaLogoRaw.png' %}">
+
 </head>
 <body>
 <nav class="nav">
@@ -28,6 +31,10 @@
 </nav>
 {% block content %}
     
+{% endblock %}
+
+{% block script %}
+
 {% endblock %}
 </body>
 </html>
