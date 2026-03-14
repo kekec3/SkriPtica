@@ -10,19 +10,51 @@
 {% block content %}
     <div class="MainContentCentered">
         <!--<h2>{{script.Naziv}}</h2> -->
-        <h2>Naziv skripte</h2>
+        <h2>{{ script.naziv }}</h2>
 
         <h4>Opis</h4>
         <div class="ScriptDesc">
             <p class="ScriptDescParagraph">
-                <!-- {{script.opis}} -->
-                Ova skripta je napisana od strane studenta koji je 10.0!
-                Najbolji nacin da se spremi predmet PSI.
-
+                {{script.opis}}
             </p>
         </div>
+        <embed src="/media/{{ script.fajl }}" type="application/pdf" class="PdfViewer">        <button class="ButtonPDFReview">Rezimiraj</button>
+        <!--
+        <textarea name="rezime" class="textAreaOpis" placeholder="Rezime"></textarea>
+        -->
+
+        <div class="rating">
+          <input type="radio" id="star5" name="rating" value="5" />
+          <label for="star5"></label>
+          <input type="radio" id="star4" name="rating" value="4" />
+          <label for="star4"></label>
+          <input type="radio" id="star3" name="rating" value="3" />
+          <label for="star3"></label>
+          <input type="radio" id="star2" name="rating" value="2" />
+          <label for="star2"></label>
+          <input type="radio" id="star1" name="rating" value="1" />
+          <label for="star1"></label>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="komentar" class="KomentarTextArea" placeholder="Ostavite komentar..."></textarea>
+            <br>
+            <button type="submit" class="ButtonSubmit">Submit</button>
+        </form>
 
 
 
+        <h2>Komentari</h2>
+        <div>
+             {% for komentar in commentsForScript %}
+            <div class="JedanKomentar">
+                <h4>{{ komentar.idkor.kor_ime }}</h4>
+                <p>{{ komentar.tekst }}</p>
+            </div>
+            {% empty %}
+                <p>Nema komentara za ovu skriptu.</p>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

@@ -36,8 +36,7 @@ class Skripta(models.Model):
 
 
 class Komentar(models.Model):
-    id = models.AutoField(primary_key=True)
-    idkor = models.ForeignKey('accounts.Korisnik', models.DO_NOTHING, db_column='IdKor')  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
+    idkor = models.ForeignKey('accounts.Korisnik', models.DO_NOTHING, db_column='IdKor', primary_key=True)  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
     idskr = models.ForeignKey(Skripta, models.DO_NOTHING, db_column='IdSkr')  # Field name made lowercase.
     tekst = models.CharField(db_column='Tekst', max_length=512, blank=True, null=True)  # Field name made lowercase.
 

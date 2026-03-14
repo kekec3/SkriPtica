@@ -1,3 +1,4 @@
+
 {% extends 'index.html' %}
 {% load static %}
 {% block title %}
@@ -7,7 +8,6 @@
 <link rel="stylesheet" href= "{% static 'css/script.css' %}">
 <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 {% endblock %}
-
 {% block content %}
     
 {% if error %}
@@ -23,9 +23,7 @@
             <input type="text" name="naslov" class="InputAddScript" placeholder="Unesite naziv skripte!" />
             <textarea name="opis" class="textAreaOpis" placeholder="Unesite opus skripte!"></textarea>
         </div>
-
         <div class="ColumnDropDowns">
-
             <input id="inputKategorija" type="text" name="kategorija" class="InputAddScript" placeholder="Unesite kategoriju!"/>
             <input type="hidden" name="idKat" id="selected-category-id">
             
@@ -44,19 +42,15 @@
                             <input id="file" name="fajl" type="file" accept=".pdf" required />
                         </label>
                     </div>
-
                 </div>
             </section>
-
         </div>
     </div>
     <div class="Buttons">
         <button class="ButtonSubmit" type="submit">Submit</button>
     </div>
 </form>
-
 {% endblock %}
-
 {% block script %}
     <script src="{% static 'js/DropPDF.js' %}"></script>
     <script src="{% static 'js/DynamicSearch.js' %}"></script>

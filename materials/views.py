@@ -1,11 +1,10 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
+from accounts.models import Korisnik
 from materials.forms import MaterialForm
 from materials.models import Komentar, Skripta, Kategorija
 
-
-# Create your views here.
 
 def category_autocomplete(request):
     query = request.GET.get('q', '')
@@ -13,13 +12,12 @@ def category_autocomplete(request):
     data = [{'id': c.pk, 'name': c.naziv} for c in categories]
     return JsonResponse(data, safe=False)
 
-
 def add_script(request):
     if request.method == 'POST':
         data = {
-            'naziv' : request.POST.get('naslov'),
-            'opis' : request.POST.get('opis'),
-            'idkat' : request.POST.get('idKat'),
+            'naziv': request.POST.get('naslov'),
+            'opis': request.POST.get('opis'),
+            'idkat': request.POST.get('idKat'),
         }
         form = MaterialForm(data, request.FILES)
 
@@ -39,16 +37,25 @@ def add_script(request):
             # DEBUG: This will show you in the terminal WHY the form is invalid
             print(form.errors)
             return render(request, 'add_script.html', {'form': form, 'error': form.errors})
-
     return render(request, 'add_script.html')
 
-def read_script(request, script_id):
-    #script = Skripta.objects.get(id=script_id)
-    #commentsForScript = Komentar.objects.filter(idskr=script_id)
 
-    """context = {
+def read_script(request, script_id):
+    if request.method == 'POST':
+        komentar = request.POST.get('komentar').strip()
+        korisnik_id = Korisnik.objects.filter(idkor=2)
+        skripta_id = Skripta.objects.filter(idskr=script_id)
+        Komentar.objects.create(
+            idkor=korisnik_id[0],
+            idskr=skripta_id[0],
+            tekst=komentar
+        )
+        return redirect('read_script', script_id=script_id)
+    script = Skripta.objects.get(idskr=script_id)
+    commentsForScript = Komentar.objects.filter(idskr=script_id)
+
+    context = {
         'commentsForScript': commentsForScript,
         'script': script,
-    }"""
-
-    return render(request, 'read_script.html')#context
+    }
+    return render(request, 'read_script.html', context)

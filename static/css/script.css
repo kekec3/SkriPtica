@@ -24,24 +24,6 @@ h4{
     text-align: center;
 }
 
-#inputKategorija
-{
-  max-width: 190px;
-  padding: 0.875rem;
-  font-size: 1rem;
-  border: 1.5px solid #000;
-  border-radius: 0.5rem;
-  box-shadow: 2.5px 3px 0 #000;
-  outline: none;
-  transition: ease 0.25s;
-  margin-bottom: 50px;
-}
-
-#inputKategorija:focus
-{
-      box-shadow: 5.5px 7px 0 black;
-}
-
 .InputAddScript{
   max-width: 190px;
   padding: 0.875rem;
@@ -51,7 +33,7 @@ h4{
   box-shadow: 2.5px 3px 0 #000;
   outline: none;
   transition: ease 0.25s;
-  margin: 10px;
+  margin: 10px
 }
 
 .InputAddScript:focus {
@@ -59,7 +41,7 @@ h4{
 }
 .textAreaOpis{
   width: 400px;
-    height: 400px;
+    height: 450px;
   padding: 0.875rem;
   font-size: 1rem;
   border: 1.5px solid #000;
@@ -70,6 +52,21 @@ h4{
   margin: 10px
 }
 .textAreaOpis:focus {
+  box-shadow: 5.5px 7px 0 black;
+}
+.KomentarTextArea{
+    width: 400px;
+    height: 80px;
+    padding: 0.875rem;
+    font-size: 1rem;
+    border: 1.5px solid #000;
+    border-radius: 0.5rem;
+    box-shadow: 2.5px 3px 0 #000;
+    outline: none;
+    transition: ease 0.25s;
+    margin: 10px
+}
+.KomentarTextArea:focus {
   box-shadow: 5.5px 7px 0 black;
 }
 
@@ -121,6 +118,24 @@ h4{
     align-items: center;
 }
 
+#inputKategorija
+{
+  max-width: 190px;
+  padding: 0.875rem;
+  font-size: 1rem;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  box-shadow: 2.5px 3px 0 #000;
+  outline: none;
+  transition: ease 0.25s;
+  margin-bottom: 50px;
+}
+
+#inputKategorija:focus
+{
+      box-shadow: 5.5px 7px 0 black;
+}
+
 .InputFile{
   max-width: 220px;
   padding: 0.875rem;
@@ -168,6 +183,27 @@ h4{
   box-shadow: 1px 1px 0 black;
 }
 
+.ButtonPDFReview{
+    padding: 0.875rem 1.4rem;
+  font-size: 1rem;
+  border: 1.5px solid #000;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 2.5px 3px 0 #000;
+  outline: none;
+  transition: ease 0.25s;
+  margin: 10px;
+  cursor: pointer;
+}
+.ButtonPDFReview:hover{
+  box-shadow: 5.5px 7px 0 black;
+}
+
+.ButtonPDFReview:active{
+  transform: translate(2px,2px);
+  box-shadow: 1px 1px 0 black;
+}
+
 .file-upload-wrapper{
     width:100%;
     display:flex;
@@ -190,6 +226,16 @@ h4{
     display:flex;
     flex-direction:column;
     align-items:center;
+}
+
+.PdfViewer{
+    width: 700px;
+    height: 800px;
+    border: 1.5px solid #000;
+    border-radius: 0.5rem;
+    box-shadow: 2.5px 3px 0 #000;
+    background-color: white;
+    margin: 10px;
 }
 
 /* Hover efekat kao kod inputa */
@@ -242,6 +288,61 @@ h4{
 
 .browse-button:hover{
     box-shadow:5.5px 7px 0 black;
+}
+
+/* Ocenjivanje */
+.rating {
+    margin: 20px;
+  display: inline-block;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  float: right;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.rating label:before {
+  content: "\2605";
+  font-size: 30px;
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+  color: #ffd700;
+  transition: color 0.3s;
+}
+
+.JedanKomentar{
+    width: 500px;
+    padding: 12px;
+    margin: 12px 0;
+
+    border: 1.5px solid #000;
+    border-radius: 0.5rem;
+    box-shadow: 2.5px 3px 0 #000;
+
+    background-color: #fff;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.JedanKomentar h4{
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+    color: #1b75bb;
+}
+
+.JedanKomentar p{
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 .search-results-box {
