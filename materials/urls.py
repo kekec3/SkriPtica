@@ -26,4 +26,6 @@ urlpatterns = [
     path('add_script/', views.add_script, name='add_script'),
 
     path('api/categories/', views.category_autocomplete, name='category_autocomplete'),
+
+    path('search/', views.search_page, name='search_page'),
 ]

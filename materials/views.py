@@ -1,16 +1,20 @@
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from accounts.models import Korisnik
 from materials.forms import MaterialForm
-from materials.models import Komentar, Skripta, Kategorija
+from materials.models import Komentar, Skripta, Kategorija, KategorijaNad
 
+
+# Create your views here.
 
 def category_autocomplete(request):
     query = request.GET.get('q', '')
     categories = Kategorija.objects.filter(naziv__icontains=query)[:6]
     data = [{'id': c.pk, 'name': c.naziv} for c in categories]
     return JsonResponse(data, safe=False)
+
 
 def add_script(request):
     if request.method == 'POST':
@@ -37,6 +41,7 @@ def add_script(request):
             # DEBUG: This will show you in the terminal WHY the form is invalid
             print(form.errors)
             return render(request, 'add_script.html', {'form': form, 'error': form.errors})
+
     return render(request, 'add_script.html')
 
 
@@ -59,3 +64,55 @@ def read_script(request, script_id):
         'script': script,
     }
     return render(request, 'read_script.html', context)
+
+def get_all_subcategories(category_id):
+    """Recursive helper to find all child category IDs."""
+    # Start with the current category
+    all_ids = [category_id]
+
+    # Find immediate children using the KategorijaNad bridge
+    children = KategorijaNad.objects.filter(idkatnad_id=category_id).values_list('idkatpod_id', flat=True)
+
+    # Recursively find children of children
+    for child_id in children:
+        all_ids.extend(get_all_subcategories(child_id))
+
+    return list(set(all_ids))  # Use set to avoid duplicates
+
+def search_page(request):
+    fakulteti = Kategorija.objects.filter(tip='Fakultet')
+    skripte = Skripta.objects.filter(odobrena=1)
+
+    query = request.GET.get('q', '').strip()
+    tag_id = request.GET.get('tag_id', '') # From hidden input
+    tag_text = request.GET.get('kategorija', '').strip() # From visible input
+    fakultet_id = request.GET.get('fakultet', '')
+
+    if query:
+        skripte = skripte.filter(Q(naziv__icontains=query) | Q(opis__icontains=query))
+
+    final_tag_id = None
+    if tag_id:
+        final_tag_id = tag_id
+    elif tag_text:
+        try:
+            cat = Kategorija.objects.filter(naziv__icontains=tag_text).first()
+            if cat:
+                final_tag_id = cat.idkat
+        except Kategorija.DoesNotExist:
+            pass
+
+    if final_tag_id:
+        related_ids = get_all_subcategories(final_tag_id)
+        skripte = skripte.filter(idkat_id__in=related_ids)
+
+    if fakultet_id:
+        faculty_tree_ids = get_all_subcategories(fakultet_id)
+        skripte = skripte.filter(idkat_id__in=faculty_tree_ids)
+
+    context = {
+        'skripte': skripte.select_related('idkat'),
+        'fakulteti': fakulteti,
+    }
+    return render(request, 'Search.html', context)
+
