@@ -71,6 +71,19 @@ def summarize_pdf(pdf_path):
     return response.choices[0].message.content
 
 def read_script(request, script_id):
+<<<<<<< HEAD
+=======
+    if request.method == 'POST':
+        komentar = request.POST.get('komentar').strip()
+        korisnik_id = Korisnik.objects.filter(idkor=9)
+        skripta_id = Skripta.objects.filter(idskr=script_id)
+        Komentar.objects.create(
+            idkor=korisnik_id[0],
+            idskr=skripta_id[0],
+            tekst=komentar
+        )
+        return redirect('read_script', script_id=script_id)
+>>>>>>> 3164fb3 (Final Working Search Page)
     script = Skripta.objects.get(idskr=script_id)
     korisnik = Korisnik.objects.get(idkor=2)
     is_saved = Sacuvano.objects.filter(
