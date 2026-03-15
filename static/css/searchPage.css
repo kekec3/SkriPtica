@@ -90,10 +90,32 @@
 
 .cards-grid {
     display: grid;
-    /* This automatically wraps cards to the next line and centers them */
-    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    grid-template-columns: repeat(auto-fill, 270px);
     gap: 30px;
-    justify-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.card__rating {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #F4CE73; /* The yellow badge background */
+    color: #323232;            /* This will now control the text AND the icon */
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 900;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.card__rating svg {
+    fill: #323232; /* Or #fff if you want white stars on the yellow background */
 }
 
 .card-link {

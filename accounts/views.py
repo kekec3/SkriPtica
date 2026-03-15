@@ -51,7 +51,7 @@ def login(request):
                     auth_login(request, user)
                     user = Korisnik.objects.get(kor_ime=username)
                     request.session['user_id'] = user.idkor
-                    return redirect('index')
+                    return redirect('/materials/search')
                 else:
                     mess = "Pogrešna lozinka"
 
@@ -67,7 +67,7 @@ def login(request):
                 auth_login(request, user)
                 user = Korisnik.objects.get(kor_ime=user.get_username())
                 request.session['user_id'] = user.idkor
-                return redirect('index')
+                return redirect('/materials/search')
 
     context = {
         'form': form,

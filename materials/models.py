@@ -46,7 +46,7 @@ class Komentar(models.Model):
         unique_together = (('idkor', 'idskr'),)
 
 class Ocena(models.Model):
-    idkor = models.ForeignKey('accounts.Korisnik', models.DO_NOTHING, db_column='IdKor', primary_key=True)  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
+    idkor = models.ForeignKey('accounts.Korisnik', models.DO_NOTHING, db_column='IdKor')  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
     idskr = models.ForeignKey(Skripta, models.DO_NOTHING, db_column='IdSkr')  # Field name made lowercase.
     ocena = models.IntegerField(db_column='Ocena', blank=True, null=True)  # Field name made lowercase.
 

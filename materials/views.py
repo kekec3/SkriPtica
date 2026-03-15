@@ -1,5 +1,4 @@
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from dotenv import load_dotenv
@@ -10,6 +9,7 @@ import os
 from accounts.models import Korisnik
 from materials.forms import MaterialForm
 from materials.models import Komentar, Skripta, Kategorija, KategorijaNad, Sacuvano, Ocena
+
 
 def category_autocomplete(request):
     query = request.GET.get('q', '')
@@ -204,7 +204,9 @@ def get_all_subcategories(category_id):
 
 def search_page(request):
     fakulteti = Kategorija.objects.filter(tip='Fakultet')
-    skripte = Skripta.objects.filter(odobrena=1)
+    skripte = Skripta.objects.filter(odobrena=1).annotate(
+        avg_rating=Avg('ocena__ocena')
+    )
 
     query = request.GET.get('q', '').strip()
     tag_id = request.GET.get('tag_id', '')
@@ -239,7 +241,8 @@ def search_page(request):
 
 
 def saved_scripts(request):
-    korisnik = Korisnik.objects.get(kor_ime= request.user.get_username())
+    user_id = request.session.get('user_id')
+    korisnik = Korisnik.objects.get(idkor=user_id)
 
     sacuvane = Sacuvano.objects.filter(idkor=korisnik).select_related("idskr")
 
