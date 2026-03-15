@@ -4,37 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block title %}
-    <title>SkriPtica</title>
-    {% endblock %}
-    {% block style %}
+    {% block title %}<title>SkriPtica</title>{% endblock %}
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
-    {% endblock %}
     <link rel="icon" type="image/png" href="{% static 'images/SkripticaLogoRaw.png' %}">
-
+    {% block style %}{% endblock %}
 </head>
 <body>
-<nav class="nav">
+<nav class="navbar">
     <div class="logo-box">
-        <img src="{% static 'images/SkriPticaLogoPNG.png' %}" alt="Logo">
+        <img src="{% static 'images/SkripticaLogoRaw.png' %}" alt="Logo">
     </div>
 
     <div class="nav-links">
-        <a class="btn" href="{% url 'materials:search_page' %}">Materijali</a>
-        <a class="btn" href="{% url 'materials:saved_scripts' %}">Sacuvani</a>
-        <a class="btn" href="{% url 'materials:add_script' %}">Dodaj</a>
-        <a class="btn" href="#">Profil</a>
+        <a href="{% url 'materials:search_page' %}" class="nav-item">Materijali</a>
+
+        {% if is_logged_in %}
+            <a href="{% url 'materials:saved_scripts' %}" class="nav-item">Sačuvani</a>
+            <a href="{% url 'materials:add_script' %}" class="nav-item">Dodaj</a>
+            <a href="{% url 'index' %}" class="nav-item">Profil</a>
+
+            {% if is_moderator %}
+                <a href="{% url 'moderator_dashboard' %}" class="nav-item">Moderate</a>
+            {% endif %}
+
+            {% if is_admin %}
+                <a href="#" class="nav-item">Admin</a>
+            {% endif %}
+            
+            <a href="{% url 'logout' %}" class="nav-item">Odjavi se</a>
+
+        {% else %}
+            <a href="{% url 'login' %}" class="nav-item">Login</a>
+        {% endif %}
 
         <div class="line-top"></div>
         <div class="line-bottom"></div>
     </div>
 </nav>
-{% block content %}
-    
-{% endblock %}
 
-{% block script %}
+{% block content %}{% endblock %}
 
-{% endblock %}
+{% block script %}{% endblock %}
 </body>
 </html>

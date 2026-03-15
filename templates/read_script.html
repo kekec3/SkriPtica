@@ -19,6 +19,9 @@
             </p>
         </div>
         <embed src="/media/{{ script.fajl }}" type="application/pdf" class="PdfViewer">
+
+        {% if not is_guest %}
+
         <div class="ButtonsRead">
             <form method = post>
                 {% csrf_token %}
@@ -95,5 +98,9 @@
                 <p>Nema komentara za ovu skriptu.</p>
             {% endfor %}
         </div>
+    
+        {% endif %}    
+    
     </div>
+    
 {% endblock %}

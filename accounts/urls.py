@@ -22,5 +22,13 @@ from accounts import views
 urlpatterns = [
     path('index/', views.index, name='index'),
 
-    path('login/', views.login, name='login')
+    path('login/', views.login, name='login'),
+
+    path('moderator/', views.moderator_dashboard, name='moderator_dashboard'),
+
+    path('moderator/approve/<int:script_id>/', views.approve_script, name='approve_script'),
+
+    path('moderator/delete/<int:script_id>/', views.delete_script, name='delete_script'),
+
+    path('logout/', views.logout_view, name='logout'),
 ]

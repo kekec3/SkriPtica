@@ -8,9 +8,6 @@ __pycache__/
 venv/
 env/
 
-# env variables
-.env
-
 # django
 db.sqlite3
 static_root/

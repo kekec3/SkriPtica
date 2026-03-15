@@ -1,8 +1,13 @@
-/* 1. THE RESET: Eliminates the white border/padding around the site */
+/* 1. THE RESET */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden; /* This hides the horizontal scrollbar entirely */
 }
 
 body {
@@ -10,15 +15,13 @@ body {
     background: #f0f2f5;
 }
 
-/* 2. NAVBAR: Solidified the logo-to-nav connection */
-.nav {
+/* 2. NAVBAR */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     height: 80px;
-    /* Using the exact blue from your logo image */
-
     background: #1b75bb;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
@@ -27,11 +30,10 @@ body {
     height: 80px;
     display: flex;
     align-items: center;
-    pointer-events: none; /* Keeps it non-clickable as requested */
 }
 
 .logo-box img {
-    height: 100%; /* Fills navbar height 100% */
+    height: 100%;
     width: auto;
     display: block;
 }
@@ -42,11 +44,10 @@ body {
     display: flex;
     height: 100%;
     margin-right: 30px;
-    overflow-x: hidden;
 }
 
-.btn {
-    width: 110px; /* Fixed width ensures the lines travel the exact same distance */
+.nav-item {
+    width: 110px;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -59,15 +60,11 @@ body {
     transition: color 0.3s;
 }
 
-.btn:hover {
-    color: #ffffff;
-}
-
-/* 4. THE DUAL LINES: Top and Bottom coming from opposite sides */
+/* 4. THE DUAL LINES */
 .line-top, .line-bottom {
     position: absolute;
     height: 3px;
-    width: 110px; /* Matches .btn width */
+    width: 110px;
     background: white;
     border-radius: 10px;
     opacity: 0;
@@ -75,42 +72,14 @@ body {
     transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s;
 }
 
-.line-top {
-    top: 12px;
-    transform: translateX(500%); /* Starts far off-screen to the right */
-}
+.line-top { top: 12px; transform: translateX(500%); }
+.line-bottom { bottom: 12px; transform: translateX(-500%); }
 
-.line-bottom {
-    bottom: 12px;
-    transform: translateX(-500%); /* Starts far off-screen to the left */
-}
-
-/* HOVER TRIGGERS: Moving both lines at once */
-
-/* Button 1 (Home) */
-.btn:nth-child(1):hover ~ .line-top,
-.btn:nth-child(1):hover ~ .line-bottom {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-/* Button 2 (Contact) */
-.btn:nth-child(2):hover ~ .line-top,
-.btn:nth-child(2):hover ~ .line-bottom {
-    transform: translateX(110px);
-    opacity: 1;
-}
-
-/* Button 3 (About) */
-.btn:nth-child(3):hover ~ .line-top,
-.btn:nth-child(3):hover ~ .line-bottom {
-    transform: translateX(220px);
-    opacity: 1;
-}
-
-/* Button 4 (FAQ) */
-.btn:nth-child(4):hover ~ .line-top,
-.btn:nth-child(4):hover ~ .line-bottom {
-    transform: translateX(330px);
-    opacity: 1;
-}
+/* HOVER TRIGGERS (Supports up to 7 items) */
+.nav-item:nth-child(1):hover ~ .line-top, .nav-item:nth-child(1):hover ~ .line-bottom { transform: translateX(0); opacity: 1; }
+.nav-item:nth-child(2):hover ~ .line-top, .nav-item:nth-child(2):hover ~ .line-bottom { transform: translateX(110px); opacity: 1; }
+.nav-item:nth-child(3):hover ~ .line-top, .nav-item:nth-child(3):hover ~ .line-bottom { transform: translateX(220px); opacity: 1; }
+.nav-item:nth-child(4):hover ~ .line-top, .nav-item:nth-child(4):hover ~ .line-bottom { transform: translateX(330px); opacity: 1; }
+.nav-item:nth-child(5):hover ~ .line-top, .nav-item:nth-child(5):hover ~ .line-bottom { transform: translateX(440px); opacity: 1; }
+.nav-item:nth-child(6):hover ~ .line-top, .nav-item:nth-child(6):hover ~ .line-bottom { transform: translateX(550px); opacity: 1; }
+.nav-item:nth-child(7):hover ~ .line-top, .nav-item:nth-child(7):hover ~ .line-bottom { transform: translateX(660px); opacity: 1; }

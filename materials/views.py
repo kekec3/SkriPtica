@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from dotenv import load_dotenv
 from pypdf import PdfReader
 from groq import Groq
 import os
@@ -28,12 +29,7 @@ def add_script(request):
 
         if form.is_valid():
             skripta = form.save(commit=False)
-            if request.user.is_authenticated:
-                skripta.idkor = request.user.korisnik
-            else:
-                # If you have a default user with ID 1
-                from accounts.models import Korisnik
-                skripta.idkor = Korisnik.objects.get(pk=9)
+            skripta.idkor = Korisnik.objects.get(pk=request.session.get('user_id'))
 
             skripta.odobrena = 0
             skripta.save()
@@ -45,7 +41,7 @@ def add_script(request):
 
     return render(request, 'add_script.html')
 
-
+load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 def summarize_pdf(pdf_path):
     reader = PdfReader(pdf_path)
@@ -85,48 +81,52 @@ def read_script(request, script_id):
         return redirect('read_script', script_id=script_id)
 >>>>>>> 3164fb3 (Final Working Search Page)
     script = Skripta.objects.get(idskr=script_id)
-    korisnik = Korisnik.objects.get(idkor=2)
-    is_saved = Sacuvano.objects.filter(
-        idkor=korisnik,
-        idskr=script
-    ).exists()
+    user_id = request.session.get('user_id')
+
+    # Check if user is logged in
+    is_guest = user_id is None
+    is_saved = False
     summary = None
 
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        if action == 'komentar':
-            tekst_komentara = request.POST.get('komentar', '').strip()
-            if tekst_komentara:
-                Komentar.objects.update_or_create(
+    if not is_guest:
+        korisnik = Korisnik.objects.get(idkor=user_id)
+        is_saved = Sacuvano.objects.filter(idkor=korisnik, idskr=script).exists()
+
+        if request.method == 'POST':
+            action = request.POST.get('action')
+            if action == 'komentar':
+                tekst_komentara = request.POST.get('komentar', '').strip()
+                if tekst_komentara:
+                    Komentar.objects.update_or_create(
+                        idkor=korisnik,
+                        idskr=script,
+                        tekst=tekst_komentara
+                    )
+                return redirect('materials:read_script', script_id=script_id)
+
+            elif action == 'sacuvaj':
+                focus = request.POST.get('focus')
+                if focus:
+                    focus_str = "focus"
+                else:
+                    focus_str = ""
+                Sacuvano.objects.update_or_create(
                     idkor=korisnik,
                     idskr=script,
-                    tekst=tekst_komentara
+                    kolekcija= focus_str
                 )
-            return redirect('materials:read_script', script_id=script_id)
+                return redirect('materials:read_script', script_id=script_id)
 
-        elif action == 'sacuvaj':
-            focus = request.POST.get('focus')
-            if focus:
-                focus_str = "focus"
-            else:
-                focus_str = ""
-            Sacuvano.objects.update_or_create(
-                idkor=korisnik,
-                idskr=script,
-                kolekcija= focus_str
-            )
-            return redirect('materials:read_script', script_id=script_id)
+            elif action == 'zaboravi':
+                Sacuvano.objects.filter(
+                    idkor=korisnik,
+                    idskr=script
+                ).delete()
+                return redirect('materials:read_script', script_id=script_id)
 
-        elif action == 'zaboravi':
-            Sacuvano.objects.filter(
-                idkor=korisnik,
-                idskr=script
-            ).delete()
-            return redirect('materials:read_script', script_id=script_id)
-
-        elif action == 'rezimiraj':
-            pdf_path = script.fajl.path
-            summary = summarize_pdf(pdf_path)
+            elif action == 'rezimiraj':
+                pdf_path = script.fajl.path
+                summary = summarize_pdf(pdf_path)
 
 
     commentsForScript = Komentar.objects.filter(idskr=script_id)
@@ -193,7 +193,8 @@ def search_page(request):
 
 
 def saved_scripts(request):
-    korisnik = Korisnik.objects.get(idkor=2)
+    user_id = request.session.get('user_id')
+    korisnik = Korisnik.objects.get(idkor=user_id)
 
     sacuvane = Sacuvano.objects.filter(idkor=korisnik).select_related("idskr")
 
