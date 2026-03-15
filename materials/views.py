@@ -33,7 +33,7 @@ def add_script(request):
 
             skripta.odobrena = 0
             skripta.save()
-            return redirect('/accounts/index/')
+            return redirect('/materials/search/')
         else:
             # DEBUG: This will show you in the terminal WHY the form is invalid
             print(form.errors)
@@ -159,14 +159,11 @@ def read_script(request, script_id):
             rating_value = request.POST.get("rating")
             if rating_value:
                 rating_value = int(rating_value)
-                postojeca_ocena = Ocena.objects.filter(
+                updated = Ocena.objects.filter(
                     idkor=korisnik,
                     idskr=script
-                ).first()
-                if postojeca_ocena:
-                    postojeca_ocena.ocena = rating_value
-                    postojeca_ocena.save()
-                else:
+                ).update(ocena=rating_value)
+                if not updated:
                     Ocena.objects.create(
                         idkor=korisnik,
                         idskr=script,
@@ -183,6 +180,7 @@ def read_script(request, script_id):
         'summary': summary,
         'is_guest': is_guest,
         'user_rating': user_rating,
+        'questions': questions
     }
     return render(request, 'read_script.html', context)
 

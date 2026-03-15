@@ -99,7 +99,25 @@ def moderator_dashboard(request):
         return redirect('materials:search_page')
 
     if request.method == 'POST':
-        pass
+        naziv = request.POST.get('naziv', '').strip()
+        parent_id = request.POST.get('parent_id')
+        tip = request.POST.get('tip', 'Ostalo')
+
+        if naziv:
+            # Check if category already exists (Case-insensitive)
+            if Kategorija.objects.filter(naziv__iexact=naziv).exists():
+                messages.error(request, f'Greška: Kategorija sa nazivom "{naziv}" već postoji.')
+            else:
+                nova_kat = Kategorija.objects.create(naziv=naziv, tip=tip)
+                if parent_id:
+                    try:
+                        parent_kat = Kategorija.objects.get(pk=parent_id)
+                        KategorijaNad.objects.create(idkatnad=parent_kat, idkatpod=nova_kat)
+                    except Kategorija.DoesNotExist:
+                        pass
+                messages.success(request, f'Uspešno dodata kategorija: {naziv}')
+
+            return redirect('moderator_dashboard')
 
     # Define the custom sort order
     kategorije = Kategorija.objects.annotate(
@@ -183,6 +201,7 @@ def update_my_script(request, script_id):
             print(form.errors)
 
     return render(request, 'update_script.html',{'form': form, 'tekst': tekst})
+
 def admin_dashboard(request):
     roles = user_role_processor(request)
 

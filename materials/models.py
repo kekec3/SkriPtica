@@ -36,8 +36,8 @@ class Skripta(models.Model):
 
 
 class Komentar(models.Model):
-    idkor = models.ForeignKey('accounts.Korisnik', models.DO_NOTHING, db_column='IdKor', primary_key=True)  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
-    idskr = models.ForeignKey(Skripta, models.DO_NOTHING, db_column='IdSkr')  # Field name made lowercase.
+    idkor = models.ForeignKey('accounts.Korisnik', models.CASCADE, db_column='IdKor', primary_key=True)  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
+    idskr = models.ForeignKey(Skripta, models.CASCADE, db_column='IdSkr')  # Field name made lowercase.
     tekst = models.CharField(db_column='Tekst', max_length=512, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -46,8 +46,8 @@ class Komentar(models.Model):
         unique_together = (('idkor', 'idskr'),)
 
 class Ocena(models.Model):
-    idkor = models.ForeignKey('accounts.Korisnik', models.DO_NOTHING, db_column='IdKor')  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
-    idskr = models.ForeignKey(Skripta, models.DO_NOTHING, db_column='IdSkr')  # Field name made lowercase.
+    idkor = models.ForeignKey('accounts.Korisnik', models.CASCADE, db_column='IdKor', primary_key=True)  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
+    idskr = models.ForeignKey(Skripta, models.CASCADE, db_column='IdSkr')  # Field name made lowercase.
     ocena = models.IntegerField(db_column='Ocena', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -56,8 +56,8 @@ class Ocena(models.Model):
         unique_together = (('idkor', 'idskr'),)
 
 class Sacuvano(models.Model):
-    idkor = models.ForeignKey('accounts.Korisnik'    , models.DO_NOTHING, db_column='IdKor', primary_key=True)  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
-    idskr = models.ForeignKey(Skripta, models.DO_NOTHING, db_column='IdSkr')  # Field name made lowercase.
+    idkor = models.ForeignKey('accounts.Korisnik'    , models.CASCADE, db_column='IdKor', primary_key=True)  # Field name made lowercase. The composite primary key (IdKor, IdSkr) found, that is not supported. The first column is selected.
+    idskr = models.ForeignKey(Skripta, models.CASCADE, db_column='IdSkr')  # Field name made lowercase.
     kolekcija = models.CharField(db_column='Kolekcija', max_length=18, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
