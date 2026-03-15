@@ -45,6 +45,5 @@ urlpatterns = [
     path('promote_to_moderator/<int:user_id>/', views.promote_to_moderator, name='promote_to_moderator'),
 
     path('demote_to_user/<int:user_id>/', views.demote_to_user, name='demote_to_user'),
-]
 
 ]
