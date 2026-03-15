@@ -1,0 +1,80 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+<title>Login</title>
+{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href= "{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+{% block content %}
+   {% if mess or form.errors %}
+   <div id="errorPopup" class="error-popup">
+       <div class="error-content">
+           <span class="close-btn" onclick="closeError()">×</span>
+           <h3>Greška</h3>
+           {% if mess %}
+               <p>{{ mess }}</p>
+           {% endif %}
+           {% if form.errors %}
+               <ul>
+               {% for field in form %}
+                   {% for error in field.errors %}
+                       <li>{{ error }}</li>
+                   {% endfor %}
+               {% endfor %}
+               </ul>
+           {% endif %}
+       </div>
+   </div>
+   <script>
+   function closeError(){
+       document.getElementById("errorPopup").style.display = "none";
+   }
+   </script>
+   {% endif %}
+   <div class="wrapper">
+        <div class="card-switch">
+            <label class="switch">
+               <input type="checkbox" class="toggle">
+               <span class="slider"></span>
+               <span class="card-side"></span>
+               <div class="flip-card__inner">
+                  <div class="flip-card__front">
+                     <div class="title">Uloguj se</div>
+                     <form class="flip-card__form" action="" method="post">
+                        {%csrf_token%}
+                        <input type="hidden" name="action" value="login">
+                        <input class="flip-card__input" name="username" placeholder="Ime" type="text">
+                        <input class="flip-card__input" name="password" placeholder="Sifra" type="password">
+                        <input class="flip-card__btn" type="submit" value="Uloguj se">
+                        {{mess}}
+                     </form>
+                  </div>
+                  <div class="flip-card__back">
+                     <div class="title">Registruj se</div>
+                     <form class="flip-card__form" action="" method="post">
+                        {%csrf_token%}
+                        {%csrf_token%}
+                        <input type="hidden" name="action" value="register">
+                        <input class="flip-card__input" placeholder="Ime" name="username" type="text">
+                        <input class="flip-card__input" name="email" placeholder="email" type="email">
+                        <input class="flip-card__input" name="password1" placeholder="Sifra" type="password">
+                        <input class="flip-card__input" name="password2" placeholder="Ponovi sifru" type="password">
+                        <input class="flip-card__btn" type="submit" value="Registruj se">
+                     </form>
+                  </div>
+               </div>
+            </label>
+        </div>
+   </div>
+   <script>
+   window.onload = function(){
+       let action = "{{ action }}";
+       if(action === "register"){
+           document.querySelector(".toggle").checked = true;
+       }
+   }
+   </script>
+{% endblock %}
