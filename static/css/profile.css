@@ -1,4 +1,4 @@
-.bar{
+.bar {
     background-color: #c4d7ff;
     width: 100%;
     height: 100px;
@@ -7,34 +7,48 @@
     align-items: center;
 }
 
-.card{
-    width:100%;
-    --main-color: #000000;
-    --sub-color: #393838;
-    --bg-color: #e8e8e8;
-    --accent-color: #242C88;
-}
-
-.card-link{
-    width:70%;
-    margin-left: 10%;
-}
-
 .card-container {
     display: flex;
-    align-items: center;  /* vertically center card and buttons */
-    gap: 15px;            /* space between card and buttons */
-    margin-bottom: 20px;  /* optional spacing between rows */
+    flex-wrap: wrap;        /* wrap cards to next line */
+    gap: 30px 20px;         /* vertical gap 30px, horizontal gap 20px */
+    justify-content: flex-start;
+    margin: 15px;
+}
+
+.card-item {
+    display: flex;
+    flex-direction: column; /* card on top, buttons below */
+    align-items: center;
+}
+
+.card-link {
+    width: 250px;           /* fixed card width */
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+}
+
+.card {
+    width: 100%;
+    background-color: var(--bg-color, #e8e8e8);
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 .controle {
     display: flex;
-    flex-direction: column; /* buttons stacked vertically, or row if you prefer */
-    gap: 20px;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .controle button {
-    padding: 20px 12px;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -44,17 +58,17 @@
 }
 
 .controle button:hover {
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
-.izmeni{
+.izmeni {
     background-color: #27ae60;
 }
-.obrisi{
+
+.obrisi {
     background-color: red;
 }
 
-.card__img{
-    height:40px;
+.card__img {
+    height: 40px;
 }
-

@@ -14,9 +14,10 @@
     <div class="bar">
         <h2>{{ username }}</h2>
     </div>
-    {% for skripta in skripte %}
-        <br>
+<br>
         <div class="card-container">
+        {% for skripta in skripte %}
+            <div class="card-item">
             <a href="{% url 'materials:read_script' skripta.idskr %}" class="card-link">
                 <div class="card">
                     <div class="card__img">
@@ -40,12 +41,17 @@
                 </div>
             </a>
             <div class="controle">
-                <button class="izmeni" > Izmeni </button>
-                <button class="obrisi" > Obrisi </button>
+                <form action="{% url 'update_my_script' skripta.idskr %}" method="POST"> {% csrf_token %}
+                    <button class="izmeni" type="submit"> Izmeni </button>
+                </form>
+                <form action="{% url 'delete_my_script' skripta.idskr %}" method="POST"> {% csrf_token %}
+                    <button class="obrisi" type="submit"> Obrisi </button>
+                </form>
             </div>
         </div>
-    {% empty %}
-        <p style="text-align: center; grid-column: 1 / -1; color: #5b5b5b;">Nema rezultata za vašu pretragu.</p>
-    {% endfor %}
+        {% empty %}
+            <p style="text-align: center; grid-column: 1 / -1; color: #5b5b5b;">Nema rezultata za vašu pretragu.</p>
+        {% endfor %}
+        </div>
     </div>
 {% endblock %}

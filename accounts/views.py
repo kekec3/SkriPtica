@@ -7,6 +7,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from accounts.context_check import user_role_processor
 from accounts.models import Korisnik
+from materials.forms import MaterialForm
 from materials.models import Sacuvano, Skripta
 from materials.models import Kategorija, Skripta, KategorijaNad
 
@@ -146,6 +147,42 @@ def delete_script(request, script_id):
 
     return redirect('moderator_dashboard')
 
+def profile(request):
+    user = Korisnik.objects.get(kor_ime=request.user.username)
+    username = user.kor_ime
+    id = user.idkor
+    skripte = Skripta.objects.filter(idkor=id)
+    context = {'username': username, 'id': id, 'skripte': skripte}
+    return render(request, 'profile.html', context)
+
+def delete_my_script(request, script_id):
+    if request.method == 'POST':
+        skripta = get_object_or_404(Skripta, pk=script_id)
+        if skripta.fajl:
+            skripta.fajl.delete()
+        skripta.delete()
+
+    return redirect('profile')
+
+
+def update_my_script(request, script_id):
+    skripta = Skripta.objects.get(idskr=script_id)
+    tekst = skripta.opis
+    form = MaterialForm(instance=skripta)
+    if request.method == 'POST':
+        form = MaterialForm(request.POST, request.FILES, instance=skripta)
+
+        if form.is_valid():
+            skripta = form.save(commit=False)
+            skripta.idkor = Korisnik.objects.get(pk=request.session.get('user_id'))
+
+            skripta.odobrena = 0
+            skripta.save()
+            return redirect('/accounts/profile/')
+        else:
+            print(form.errors)
+
+    return render(request, 'update_script.html',{'form': form, 'tekst': tekst})
 def admin_dashboard(request):
     roles = user_role_processor(request)
 

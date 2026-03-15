@@ -21,7 +21,7 @@
         {% if is_logged_in %}
             <a href="{% url 'materials:saved_scripts' %}" class="nav-item">Sačuvani</a>
             <a href="{% url 'materials:add_script' %}" class="nav-item">Dodaj</a>
-            <a href="{% url 'index' %}" class="nav-item">Profil</a>
+            <a href="{% url 'profile' %}" class="nav-item">Profil</a>
 
             {% if is_moderator %}
                 <a href="{% url 'moderator_dashboard' %}" class="nav-item">Moderate</a>

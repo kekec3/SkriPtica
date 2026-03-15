@@ -37,7 +37,14 @@ urlpatterns = [
 
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
+    path('profile/', views.profile, name='profile'),
+
+    path('profile/delete/<int:script_id>', views.delete_my_script, name='delete_my_script'),
+
+    path('profile/update/<int:script_id>', views.update_my_script, name='update_my_script'),
     path('promote_to_moderator/<int:user_id>/', views.promote_to_moderator, name='promote_to_moderator'),
 
     path('demote_to_user/<int:user_id>/', views.demote_to_user, name='demote_to_user'),
+]
+
 ]
