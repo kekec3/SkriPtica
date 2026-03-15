@@ -1,13 +1,14 @@
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from pypdf import PdfReader
+from groq import Groq
+import os
 
 from accounts.models import Korisnik
 from materials.forms import MaterialForm
-from materials.models import Komentar, Skripta, Kategorija, KategorijaNad
+from materials.models import Komentar, Skripta, Kategorija, KategorijaNad, Sacuvano
 
-
-# Create your views here.
 
 def category_autocomplete(request):
     query = request.GET.get('q', '')
@@ -45,23 +46,83 @@ def add_script(request):
     return render(request, 'add_script.html')
 
 
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+def summarize_pdf(pdf_path):
+    reader = PdfReader(pdf_path)
+
+    text = ""
+    for page in reader.pages[:3]:
+        t = page.extract_text()
+        if t:
+            text += t
+
+    prompt = f"""
+            Napravi kratak rezime ove skripte (3-5 recenica):
+            
+            {text[:4000]}
+            """
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return response.choices[0].message.content
+
 def read_script(request, script_id):
-    if request.method == 'POST':
-        komentar = request.POST.get('komentar').strip()
-        korisnik_id = Korisnik.objects.filter(idkor=2)
-        skripta_id = Skripta.objects.filter(idskr=script_id)
-        Komentar.objects.create(
-            idkor=korisnik_id[0],
-            idskr=skripta_id[0],
-            tekst=komentar
-        )
-        return redirect('read_script', script_id=script_id)
     script = Skripta.objects.get(idskr=script_id)
+    korisnik = Korisnik.objects.get(idkor=2)
+    is_saved = Sacuvano.objects.filter(
+        idkor=korisnik,
+        idskr=script
+    ).exists()
+    summary = None
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'komentar':
+            tekst_komentara = request.POST.get('komentar', '').strip()
+            if tekst_komentara:
+                Komentar.objects.update_or_create(
+                    idkor=korisnik,
+                    idskr=script,
+                    tekst=tekst_komentara
+                )
+            return redirect('materials:read_script', script_id=script_id)
+
+        elif action == 'sacuvaj':
+            focus = request.POST.get('focus')
+            if focus:
+                focus_str = "focus"
+            else:
+                focus_str = ""
+            Sacuvano.objects.update_or_create(
+                idkor=korisnik,
+                idskr=script,
+                kolekcija= focus_str
+            )
+            return redirect('materials:read_script', script_id=script_id)
+
+        elif action == 'zaboravi':
+            Sacuvano.objects.filter(
+                idkor=korisnik,
+                idskr=script
+            ).delete()
+            return redirect('materials:read_script', script_id=script_id)
+
+        elif action == 'rezimiraj':
+            pdf_path = script.fajl.path
+            summary = summarize_pdf(pdf_path)
+
+
     commentsForScript = Komentar.objects.filter(idskr=script_id)
 
     context = {
         'commentsForScript': commentsForScript,
         'script': script,
+        'is_saved': is_saved,
+        'summary': summary,
     }
     return render(request, 'read_script.html', context)
 
@@ -116,3 +177,18 @@ def search_page(request):
     }
     return render(request, 'Search.html', context)
 
+
+
+def saved_scripts(request):
+    korisnik = Korisnik.objects.get(idkor=2)
+
+    sacuvane = Sacuvano.objects.filter(idkor=korisnik).select_related("idskr")
+
+    skripte = []
+
+    for s in sacuvane:
+        skripta = s.idskr
+        skripta.is_focus = (s.kolekcija == "focus")
+        skripte.append(skripta)
+
+    return render(request, "saved_scripts.html", {"skripte": skripte})

@@ -20,9 +20,9 @@
     </div>
 
     <div class="nav-links">
-        <a class="btn" href="#">Materijali</a>
-        <a class="btn" href="#">Sacuvani</a>
-        <a class="btn" href="#">Dodaj</a>
+        <a class="btn" href="{% url 'materials:search_page' %}">Materijali</a>
+        <a class="btn" href="{% url 'materials:saved_scripts' %}">Sacuvani</a>
+        <a class="btn" href="{% url 'materials:add_script' %}">Dodaj</a>
         <a class="btn" href="#">Profil</a>
 
         <div class="line-top"></div>

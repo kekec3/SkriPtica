@@ -18,7 +18,46 @@
                 {{script.opis}}
             </p>
         </div>
-        <embed src="/media/{{ script.fajl }}" type="application/pdf" class="PdfViewer">        <button class="ButtonPDFReview">Rezimiraj</button>
+        <embed src="/media/{{ script.fajl }}" type="application/pdf" class="PdfViewer">
+        <div class="ButtonsRead">
+            <form method = post>
+                {% csrf_token %}
+                <button class="ButtonPDFReview" name="action" value="rezimiraj" type="submit">Rezimiraj</button>
+                <button class="ButtonPDFReview"
+                        type="submit"
+                        name="action"
+                        value="{% if is_saved %}zaboravi{% else %}sacuvaj{% endif %}">
+
+                        {% if is_saved %}
+                            Zaboravi
+                        {% else %}
+                            Sacuvaj
+                        {% endif %}
+
+                </button>
+                {% if is_saved %}
+                <div >
+
+                </div>
+                {% else %}
+                <div class="focus">
+                    <label class="CheckboxContainer">
+                    <input type="checkbox" name="focus" id="focus">
+                    <span class="CustomCheckbox"></span>
+                    Focus
+                    </label>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+        {% if summary %}
+        <div class="ScriptDesc">
+            <h4>AI Rezime</h4>
+            <p class="ScriptDescParagraph">
+                {{ summary }}
+            </p>
+        </div>
+        {% endif %}
         <!--
         <textarea name="rezime" class="textAreaOpis" placeholder="Rezime"></textarea>
         -->
@@ -40,7 +79,7 @@
             {% csrf_token %}
             <textarea name="komentar" class="KomentarTextArea" placeholder="Ostavite komentar..."></textarea>
             <br>
-            <button type="submit" class="ButtonSubmit">Submit</button>
+            <button type="submit" class="ButtonSubmit" name="action" value="komentar">Submit</button>
         </form>
 
 

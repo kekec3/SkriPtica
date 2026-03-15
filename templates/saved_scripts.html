@@ -1,0 +1,67 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block title %}
+<title>Sacuvani</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/script.css' %}">
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+<link rel="stylesheet" href="{% static 'css/searchPage.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+<h2 style="text-align:center; margin:20px 0;">Sačuvane skripte</h2>
+
+<div class="cards-grid">
+    {% for skripta in skripte %}
+        <a href="{% url 'materials:read_script' skripta.idskr %}" class="card-link">
+            <div class="card {% if skripta.is_focus %}focus-card{% endif %}">
+                <div class="card__img">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" class="card-pdf-icon">
+                        <path d="M850.903995 414.630553h-0.974739V367.987457c0-65.413986-62.100693-126.406834-95.553074-159.147615l-7.470267-7.406787C648.55661 103.086822 607.179356 94.83533 573.138241 94.83533l-11.235094-0.06348H293.947238c-23.191003 0-39.365319 15.91425-39.365319 38.717199v129.78668h-82.302974c-42.09295 0-76.392084 34.233606-76.392084 76.392084V851.08727c0 41.251316 32.869791 74.769226 73.794487 76.196522 0.585662 0 0.974739 0.263139 1.559377 0.263139H850.902971c42.158478 0 76.455565-34.300158 76.455565-76.458637V491.022637c0.001024-42.096021-34.296063-76.392084-76.454541-76.392084z" fill="#27323A"/>
+                    </svg>
+                </div>
+
+                <div class="card__subtitle">
+                    {{ skripta.idkat.naziv }}
+                </div>
+
+                <div class="card__bg"></div>
+
+                <div class="card__wrapper">
+                    <div class="card__title">
+                        {{ skripta.naziv }}
+                    </div>
+
+                    <div class="card__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+                            <g>
+                                <circle cx="128" cy="128" r="96" opacity="0.2"></circle>
+                                <circle cx="128" cy="128" r="96" fill="none" stroke="rgb(224,223,220)" stroke-width="16"></circle>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="card__desc">
+                    {{ skripta.opis }}
+                </div>
+
+            </div>
+        </a>
+
+    {% empty %}
+        <p style="text-align:center; grid-column:1 / -1; color:#5b5b5b;">
+            Nemate sačuvanih skripti.
+        </p>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

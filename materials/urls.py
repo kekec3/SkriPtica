@@ -18,7 +18,9 @@ from django.contrib import admin
 from django.urls import path
 
 from materials import views
-from materials.views import read_script, add_script
+from materials.views import read_script, add_script, saved_scripts
+
+app_name = 'materials'
 
 urlpatterns = [
     path('read_script/<int:script_id>/', read_script, name='read_script'),
@@ -28,4 +30,6 @@ urlpatterns = [
     path('api/categories/', views.category_autocomplete, name='category_autocomplete'),
 
     path('search/', views.search_page, name='search_page'),
+
+    path('saved_scripts/', saved_scripts, name='saved_scripts'),
 ]
