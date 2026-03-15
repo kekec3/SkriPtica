@@ -31,4 +31,10 @@ urlpatterns = [
     path('moderator/delete/<int:script_id>/', views.delete_script, name='delete_script'),
 
     path('logout/', views.logout_view, name='logout'),
+
+    path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
+
+    path('promote_to_moderator/<int:user_id>/', views.promote_to_moderator, name='promote_to_moderator'),
+
+    path('demote_to_user/<int:user_id>/', views.demote_to_user, name='demote_to_user'),
 ]

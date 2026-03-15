@@ -14,7 +14,7 @@ class Korisnik(models.Model):
     idkor = models.AutoField(db_column='IdKor', primary_key=True)  # Field name made lowercase.
     idrol = models.ForeignKey(Role, models.DO_NOTHING, db_column='IdRol', default=3)  # Field name made lowercase.
     kor_ime = models.CharField(db_column='Kor_Ime', max_length=20)  # Field name made lowercase.
-    lozinka = models.CharField(db_column='Lozinka', max_length=20)  # Field name made lowercase.
+    lozinka = models.CharField(db_column='Lozinka', max_length=500)  # Field name made lowercase.
     email = models.CharField(db_column='Email', max_length=100)  # Field name made lowercase.
 
     class Meta:

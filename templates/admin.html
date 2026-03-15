@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block title %}
+<title>Admin Dashboard</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+<link rel="stylesheet" href="{% static 'css/script.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="MainContentCentered">
+    <h2>Upravljanje korisnicima</h2>
+
+    <div style="width: 80%; max-width: 900px;">
+        {% for korisnik in korisnici %}
+            <div class="JedanKomentar" style="margin-bottom: 16px;">
+                <h4>{{ korisnik.kor_ime }}</h4>
+                <p>Email: {{ korisnik.email }}</p>
+                <p>Uloga: {{ korisnik.idrol.opis }}</p>
+
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    {% if korisnik.idrol.opis != 'admin' %}
+                        {% if korisnik.idrol.opis != 'moderator' %}
+                            <form method="post" action="{% url 'promote_to_moderator' korisnik.idkor %}">
+                                {% csrf_token %}
+                                <button type="submit" class="ButtonSubmit">Promote u moderatora</button>
+                            </form>
+                        {% endif %}
+
+                        {% if korisnik.idrol.opis != 'korisnik' %}
+                            <form method="post" action="{% url 'demote_to_user' korisnik.idkor %}">
+                                {% csrf_token %}
+                                <button type="submit" class="ButtonSubmit">Demote u korisnika</button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <p><strong>Admin</strong></p>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p>Nema korisnika.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

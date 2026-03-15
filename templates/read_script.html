@@ -23,31 +23,30 @@
         {% if not is_guest %}
 
         <div class="ButtonsRead">
-            <form method = post>
+            <form method="post">
                 {% csrf_token %}
                 <button class="ButtonPDFReview" name="action" value="rezimiraj" type="submit">Rezimiraj</button>
+                <button class="ButtonPDFReview" name="action" value="pitanja" type="submit">Generiši pitanja</button>
+
                 <button class="ButtonPDFReview"
                         type="submit"
                         name="action"
                         value="{% if is_saved %}zaboravi{% else %}sacuvaj{% endif %}">
-
-                        {% if is_saved %}
-                            Zaboravi
-                        {% else %}
-                            Sacuvaj
-                        {% endif %}
-
+                    {% if is_saved %}
+                        Zaboravi
+                    {% else %}
+                        Sacuvaj
+                    {% endif %}
                 </button>
-                {% if is_saved %}
-                <div >
 
-                </div>
+                {% if is_saved %}
+                <div></div>
                 {% else %}
                 <div class="focus">
                     <label class="CheckboxContainer">
-                    <input type="checkbox" name="focus" id="focus">
-                    <span class="CustomCheckbox"></span>
-                    Focus
+                        <input type="checkbox" name="focus" id="focus">
+                        <span class="CustomCheckbox"></span>
+                        Focus
                     </label>
                 </div>
                 {% endif %}
@@ -61,22 +60,46 @@
             </p>
         </div>
         {% endif %}
-        <!--
-        <textarea name="rezime" class="textAreaOpis" placeholder="Rezime"></textarea>
-        -->
-
-        <div class="rating">
-          <input type="radio" id="star5" name="rating" value="5" />
-          <label for="star5"></label>
-          <input type="radio" id="star4" name="rating" value="4" />
-          <label for="star4"></label>
-          <input type="radio" id="star3" name="rating" value="3" />
-          <label for="star3"></label>
-          <input type="radio" id="star2" name="rating" value="2" />
-          <label for="star2"></label>
-          <input type="radio" id="star1" name="rating" value="1" />
-          <label for="star1"></label>
+        {% if questions %}
+        <div class="ScriptDesc">
+            <h4>AI Pitanja za proveru znanja</h4>
+            <p class="ScriptDescParagraph" style="white-space: pre-line;">
+                {{ questions }}
+            </p>
         </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="oceni">
+
+            <div class="rating">
+                <input type="radio" name="rating" id="star5" value="5"
+                       {% if user_rating == 5 %}checked{% endif %}
+                       onchange="this.form.submit()">
+                <label for="star5"></label>
+
+                <input type="radio" name="rating" id="star4" value="4"
+                       {% if user_rating == 4 %}checked{% endif %}
+                       onchange="this.form.submit()">
+                <label for="star4"></label>
+
+                <input type="radio" name="rating" id="star3" value="3"
+                       {% if user_rating == 3 %}checked{% endif %}
+                       onchange="this.form.submit()">
+                <label for="star3"></label>
+
+                <input type="radio" name="rating" id="star2" value="2"
+                       {% if user_rating == 2 %}checked{% endif %}
+                       onchange="this.form.submit()">
+                <label for="star2"></label>
+
+                <input type="radio" name="rating" id="star1" value="1"
+                       {% if user_rating == 1 %}checked{% endif %}
+                       onchange="this.form.submit()">
+                <label for="star1"></label>
+            </div>
+        </form>
 
         <form method="post">
             {% csrf_token %}

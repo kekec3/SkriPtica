@@ -19,6 +19,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login
 from django.shortcuts import render, redirect
+from accounts.models import Korisnik, Role
 
 
 def login(request):
@@ -53,11 +54,13 @@ def login(request):
                     mess = "Pogrešna lozinka"
 
         elif action == 'register':
+            username1 = request.POST.get('username')
+            password1 = request.POST.get('password1')
             form = UserCreationForm(request.POST)
 
             if form.is_valid():
                 user = form.save()
-                korisnik = Korisnik.objects.create(kor_ime=user.get_username(), lozinka=user.password, email=user.get_email_field_name())
+                korisnik = Korisnik.objects.create(kor_ime=username1, lozinka=password1, email = request.POST.get("email"))
                 korisnik.save()
                 auth_login(request, user)
                 user = Korisnik.objects.get(kor_ime=user.get_username())
@@ -86,7 +89,6 @@ def moderator_dashboard(request):
         return redirect('materials:search_page')
 
     if request.method == 'POST':
-        # ... (Keep your existing POST logic for creating categories) ...
         pass
 
     # Define the custom sort order
@@ -99,7 +101,7 @@ def moderator_dashboard(request):
             default=Value(5),
             output_field=IntegerField(),
         )
-    ).order_by('sort_order', 'naziv') # Sort by type order, then alphabetically
+    ).order_by('sort_order', 'naziv')
 
     pending_scripts = Skripta.objects.filter(odobrena=0).select_related('idkat')
 
@@ -134,3 +136,58 @@ def delete_script(request, script_id):
         skripta.delete()
 
     return redirect('moderator_dashboard')
+
+def admin_dashboard(request):
+    roles = user_role_processor(request)
+
+    if not roles.get('is_admin'):
+        return redirect('materials:search_page')
+
+    current_user_id = request.session.get('user_id')
+
+    korisnici = Korisnik.objects.select_related('idrol') \
+        .exclude(idkor=current_user_id) \
+        .order_by('kor_ime')
+
+    context = {
+        'korisnici': korisnici
+    }
+
+    return render(request, 'admin.html', context)
+
+
+def promote_to_moderator(request, user_id):
+    roles = user_role_processor(request)
+
+    if not roles.get('is_admin'):
+        return redirect('materials:search_page')
+
+    if request.method == 'POST':
+        korisnik = get_object_or_404(Korisnik, pk=user_id)
+
+        if korisnik.idrol.opis == 'admin':
+            return redirect('admin_dashboard')
+
+        moderator_role = get_object_or_404(Role, opis='moderator')
+        korisnik.idrol = moderator_role
+        korisnik.save()
+
+    return redirect('admin_dashboard')
+
+def demote_to_user(request, user_id):
+    roles = user_role_processor(request)
+
+    if not roles.get('is_admin'):
+        return redirect('materials:search_page')
+
+    if request.method == 'POST':
+        korisnik = get_object_or_404(Korisnik, pk=user_id)
+
+        if korisnik.idrol.opis == 'admin':
+            return redirect('admin_dashboard')
+
+        user_role = get_object_or_404(Role, opis='korisnik')
+        korisnik.idrol = user_role
+        korisnik.save()
+
+    return redirect('admin_dashboard')

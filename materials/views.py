@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -8,8 +9,7 @@ import os
 
 from accounts.models import Korisnik
 from materials.forms import MaterialForm
-from materials.models import Komentar, Skripta, Kategorija, KategorijaNad, Sacuvano
-
+from materials.models import Komentar, Skripta, Kategorija, KategorijaNad, Sacuvano, Ocena
 
 def category_autocomplete(request):
     query = request.GET.get('q', '')
@@ -47,7 +47,7 @@ def summarize_pdf(pdf_path):
     reader = PdfReader(pdf_path)
 
     text = ""
-    for page in reader.pages[:3]:
+    for page in reader.pages:
         t = page.extract_text()
         if t:
             text += t
@@ -66,68 +66,113 @@ def summarize_pdf(pdf_path):
     )
     return response.choices[0].message.content
 
+def generate_questions_from_pdf(pdf_path):
+    reader = PdfReader(pdf_path)
+
+    text = ""
+    for page in reader.pages:
+        t = page.extract_text()
+        if t:
+            text += t
+
+    prompt = f"""
+    Na osnovu sledeće skripte napravi tačno 5 pitanja za proveru znanja.
+
+    Pravila:
+    - pitanja neka budu jasna i konkretna
+    - neka budu na srpskom jeziku
+    - neka budu vezana direktno za gradivo iz teksta
+    - vrati samo pitanja, bez odgovora
+    - svako pitanje napiši u novom redu i numeriši od 1 do 5
+
+    Tekst skripte:
+    {text[:4000]}
+    """
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return response.choices[0].message.content
+
 def read_script(request, script_id):
-<<<<<<< HEAD
-=======
-    if request.method == 'POST':
-        komentar = request.POST.get('komentar').strip()
-        korisnik_id = Korisnik.objects.filter(idkor=9)
-        skripta_id = Skripta.objects.filter(idskr=script_id)
-        Komentar.objects.create(
-            idkor=korisnik_id[0],
-            idskr=skripta_id[0],
-            tekst=komentar
-        )
-        return redirect('read_script', script_id=script_id)
->>>>>>> 3164fb3 (Final Working Search Page)
     script = Skripta.objects.get(idskr=script_id)
     user_id = request.session.get('user_id')
 
-    # Check if user is logged in
     is_guest = user_id is None
-    is_saved = False
     summary = None
+    questions = None
+    is_saved = False
+    korisnik = None
 
     if not is_guest:
         korisnik = Korisnik.objects.get(idkor=user_id)
         is_saved = Sacuvano.objects.filter(idkor=korisnik, idskr=script).exists()
 
-        if request.method == 'POST':
-            action = request.POST.get('action')
-            if action == 'komentar':
-                tekst_komentara = request.POST.get('komentar', '').strip()
-                if tekst_komentara:
-                    Komentar.objects.update_or_create(
-                        idkor=korisnik,
-                        idskr=script,
-                        tekst=tekst_komentara
-                    )
-                return redirect('materials:read_script', script_id=script_id)
+    user_rating_obj = Ocena.objects.filter(idkor=korisnik, idskr=script).first()
+    user_rating = user_rating_obj.ocena if user_rating_obj else None
 
-            elif action == 'sacuvaj':
-                focus = request.POST.get('focus')
-                if focus:
-                    focus_str = "focus"
-                else:
-                    focus_str = ""
-                Sacuvano.objects.update_or_create(
+    if request.method == 'POST' and not is_guest:
+        action = request.POST.get('action')
+
+        if action == 'komentar':
+            tekst_komentara = request.POST.get('komentar', '').strip()
+            if tekst_komentara:
+                Komentar.objects.update_or_create(
                     idkor=korisnik,
                     idskr=script,
-                    kolekcija= focus_str
+                    defaults={"tekst": tekst_komentara}
                 )
-                return redirect('materials:read_script', script_id=script_id)
+            return redirect('materials:read_script', script_id=script_id)
 
-            elif action == 'zaboravi':
-                Sacuvano.objects.filter(
+        elif action == 'sacuvaj':
+            focus = request.POST.get('focus')
+            focus_str = "focus" if focus else ""
+
+            Sacuvano.objects.update_or_create(
+                idkor=korisnik,
+                idskr=script,
+                defaults={"kolekcija": focus_str}
+            )
+            return redirect('materials:read_script', script_id=script_id)
+
+        elif action == 'zaboravi':
+            Sacuvano.objects.filter(
+                idkor=korisnik,
+                idskr=script
+            ).delete()
+            return redirect('materials:read_script', script_id=script_id)
+
+        elif action == 'rezimiraj':
+            pdf_path = script.fajl.path
+            summary = summarize_pdf(pdf_path)
+
+        elif action == 'pitanja':
+            pdf_path = script.fajl.path
+            questions = generate_questions_from_pdf(pdf_path)
+
+
+        elif action == 'oceni':
+            rating_value = request.POST.get("rating")
+            if rating_value:
+                rating_value = int(rating_value)
+                postojeca_ocena = Ocena.objects.filter(
                     idkor=korisnik,
                     idskr=script
-                ).delete()
-                return redirect('materials:read_script', script_id=script_id)
-
-            elif action == 'rezimiraj':
-                pdf_path = script.fajl.path
-                summary = summarize_pdf(pdf_path)
-
+                ).first()
+                if postojeca_ocena:
+                    postojeca_ocena.ocena = rating_value
+                    postojeca_ocena.save()
+                else:
+                    Ocena.objects.create(
+                        idkor=korisnik,
+                        idskr=script,
+                        ocena=rating_value
+                    )
+            return redirect('materials:read_script', script_id=script_id)
 
     commentsForScript = Komentar.objects.filter(idskr=script_id)
 
@@ -136,6 +181,8 @@ def read_script(request, script_id):
         'script': script,
         'is_saved': is_saved,
         'summary': summary,
+        'is_guest': is_guest,
+        'user_rating': user_rating,
     }
     return render(request, 'read_script.html', context)
 
@@ -144,22 +191,24 @@ def get_all_subcategories(category_id):
     # Start with the current category
     all_ids = [category_id]
 
-    # Find immediate children using the KategorijaNad bridge
-    children = KategorijaNad.objects.filter(idkatnad_id=category_id).values_list('idkatpod_id', flat=True)
+    children = KategorijaNad.objects.filter(
+        idkatnad_id=category_id
+    ).values_list('idkatpod_id', flat=True)
 
     # Recursively find children of children
     for child_id in children:
         all_ids.extend(get_all_subcategories(child_id))
 
-    return list(set(all_ids))  # Use set to avoid duplicates
+    return list(set(all_ids))
+
 
 def search_page(request):
     fakulteti = Kategorija.objects.filter(tip='Fakultet')
     skripte = Skripta.objects.filter(odobrena=1)
 
     query = request.GET.get('q', '').strip()
-    tag_id = request.GET.get('tag_id', '') # From hidden input
-    tag_text = request.GET.get('kategorija', '').strip() # From visible input
+    tag_id = request.GET.get('tag_id', '')
+    tag_text = request.GET.get('kategorija', '').strip()
     fakultet_id = request.GET.get('fakultet', '')
 
     if query:
@@ -169,12 +218,9 @@ def search_page(request):
     if tag_id:
         final_tag_id = tag_id
     elif tag_text:
-        try:
-            cat = Kategorija.objects.filter(naziv__icontains=tag_text).first()
-            if cat:
-                final_tag_id = cat.idkat
-        except Kategorija.DoesNotExist:
-            pass
+        cat = Kategorija.objects.filter(naziv__icontains=tag_text).first()
+        if cat:
+            final_tag_id = cat.idkat
 
     if final_tag_id:
         related_ids = get_all_subcategories(final_tag_id)
@@ -193,8 +239,7 @@ def search_page(request):
 
 
 def saved_scripts(request):
-    user_id = request.session.get('user_id')
-    korisnik = Korisnik.objects.get(idkor=user_id)
+    korisnik = Korisnik.objects.get(kor_ime= request.user.get_username())
 
     sacuvane = Sacuvano.objects.filter(idkor=korisnik).select_related("idskr")
 
