@@ -7,6 +7,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from accounts.context_check import user_role_processor
 from accounts.models import Korisnik
+from materials.models import Sacuvano, Skripta
 from materials.models import Kategorija, Skripta, KategorijaNad
 
 
@@ -74,6 +75,14 @@ def login(request):
     }
 
     return render(request, 'login.html', context)
+
+def profile(request):
+    user = Korisnik.objects.get(kor_ime=request.user.username)
+    username = user.kor_ime
+    id = user.idkor
+    skripte = Skripta.objects.filter(idkor=id)
+    context = {'username': username, 'id': id, 'skripte': skripte}
+    return render(request, 'profile.html', context)
 
 
 def logout_view(request):

@@ -24,6 +24,9 @@ urlpatterns = [
 
     path('login/', views.login, name='login'),
 
+    path('profile/', views.profile, name='profile'),
+    path('login/', views.login, name='login'),
+
     path('moderator/', views.moderator_dashboard, name='moderator_dashboard'),
 
     path('moderator/approve/<int:script_id>/', views.approve_script, name='approve_script'),
