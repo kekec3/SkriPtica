@@ -15,7 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+os.environ["PATH"] += os.pathsep + "D:\\Desktop\\psi\\windows_10_cmake_Release_Graphviz-14.1.3-win64\\Graphviz-14.1.3-win64\\bin"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'materials.apps.MaterialsConfig',
     'ai_services.apps.AiServicesConfig',
+    'django_extensions',
+    'django.contrib.admindocs',
 ]
 
 MIDDLEWARE = [

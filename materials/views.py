@@ -1,3 +1,7 @@
+'''
+Authors: Andrej Praizović 0300/2022, Jaksa Jezdić 0543/2022
+'''
+
 from django.db.models import Q, Avg
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -5,13 +9,23 @@ from dotenv import load_dotenv
 from pypdf import PdfReader
 from groq import Groq
 import os
-
 from accounts.models import Korisnik
 from materials.forms import MaterialForm
 from materials.models import Komentar, Skripta, Kategorija, KategorijaNad, Sacuvano, Ocena
 
 
+
+
 def category_autocomplete(request):
+    """
+    Opis: Vraća JSON listu kategorija čiji naziv odgovara prosleđenom query parametru 'q'.
+          Koristi se za autocomplete polje pri pretrazi ili dodavanju skripte.
+          Vraća maksimalno 6 rezultata.
+
+    Tabele baze: :model:`materials.Kategorija`
+
+    Template: (nema — vraća JsonResponse)
+    """
     query = request.GET.get('q', '')
     categories = Kategorija.objects.filter(naziv__icontains=query)[:6]
     data = [{'id': c.pk, 'name': c.naziv} for c in categories]
@@ -19,6 +33,17 @@ def category_autocomplete(request):
 
 
 def add_script(request):
+    """
+    Opis: Prikazuje formu za dodavanje nove skripte i obrađuje njeno slanje.
+          Po uspješnom čuvanju, skripta se vezuje za trenutno prijavljenog korisnika
+          i postavlja u status "nije odobrena" (odobrena=0), nakon čega se korisnik
+          preusmjerava na stranicu pretrage.
+
+    Tabele baze: :model:`materials.Skripta`
+                 :model:`accounts.Korisnik`
+
+    Template: :template:`materials/add_script.html`
+    """
     if request.method == 'POST':
         data = {
             'naziv': request.POST.get('naslov'),
@@ -44,6 +69,13 @@ def add_script(request):
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 def summarize_pdf(pdf_path):
+    """
+    Opis: Prima putanju do PDF fajla, čita njegov tekst i putem Groq API-ja
+          (model llama-3.3-70b-versatile) generiše kratak rezime skripte od 3 do 5 rečenica
+          na srpskom jeziku. Koristi se unutar read_script view-a.
+
+    Tabele baze: (nema direktnog pristupa)
+    """
     reader = PdfReader(pdf_path)
 
     text = ""
@@ -67,6 +99,13 @@ def summarize_pdf(pdf_path):
     return response.choices[0].message.content
 
 def generate_questions_from_pdf(pdf_path):
+    """
+    Opis: Prima putanju do PDF fajla, čita njegov tekst i putem Groq API-ja
+          (model llama-3.3-70b-versatile) generiše tačno 5 pitanja za provjeru znanja
+          vezanih za sadržaj skripte. Pitanja su na srpskom jeziku i numerisana od 1 do 5.
+
+    Tabele baze: (nema direktnog pristupa)
+    """
     reader = PdfReader(pdf_path)
 
     text = ""
@@ -99,6 +138,21 @@ def generate_questions_from_pdf(pdf_path):
     return response.choices[0].message.content
 
 def read_script(request, script_id):
+    """
+    Opis: Prikazuje detalje odabrane skripte zajedno sa komentarima, ocjenom
+          korisnika i statusom čuvanja. Omogućava prijavljenim korisnicima da:
+          ostave ili ažuriraju komentar, sačuvaju ili uklone skriptu iz liste,
+          ocijene skriptu, te generišu AI rezime ili pitanja za provjeru znanja.
+          Gostima je dostupan samo pregled sadržaja.
+
+    Tabele baze: :model:`materials.Skripta`
+                 :model:`materials.Komentar`
+                 :model:`materials.Sacuvano`
+                 :model:`materials.Ocena`
+                 :model:`accounts.Korisnik`
+
+    Template: :template:`materials/read_script.html`
+    """
     script = Skripta.objects.get(idskr=script_id)
     user_id = request.session.get('user_id')
 
@@ -185,15 +239,19 @@ def read_script(request, script_id):
     return render(request, 'read_script.html', context)
 
 def get_all_subcategories(category_id):
-    """Recursive helper to find all child category IDs."""
-    # Start with the current category
+    """
+    Opis: Rekurzivna pomoćna funkcija koja vraća listu ID-jeva zadate kategorije
+          i svih njenih podkategorija (na svim nivoima hijerarhije).
+          Koristi se pri filtriranju skripti po kategoriji ili fakultetu.
+
+    Tabele baze: :model:`materials.KategorijaNad`
+    """
     all_ids = [category_id]
 
     children = KategorijaNad.objects.filter(
         idkatnad_id=category_id
     ).values_list('idkatpod_id', flat=True)
 
-    # Recursively find children of children
     for child_id in children:
         all_ids.extend(get_all_subcategories(child_id))
 
@@ -201,6 +259,19 @@ def get_all_subcategories(category_id):
 
 
 def search_page(request):
+    """
+    Opis: Prikazuje stranicu za pretragu odobrenih skripti sa mogućnošću filtriranja
+          po ključnoj reči (naziv ili opis), tagu (kategoriji) i fakultetu.
+          Svaka skripta je anotirana prosječnom ocjenom. Pretraga po kategoriji
+          uključuje sve podkategorije rekurzivno.
+
+    Tabele baze: :model:`materials.Skripta`
+                 :model:`materials.Kategorija`
+                 :model:`materials.KategorijaNad`
+                 :model:`materials.Ocena`
+
+    Template: :template:`materials/Search.html`
+    """
     fakulteti = Kategorija.objects.filter(tip='Fakultet')
     skripte = Skripta.objects.filter(odobrena=1).annotate(
         avg_rating=Avg('ocena__ocena')
@@ -239,6 +310,16 @@ def search_page(request):
 
 
 def saved_scripts(request):
+    """
+    Opis: Prikazuje listu skripti koje je prijavljeni korisnik sačuvao.
+          Za svaku skriptu označava da li pripada kolekciji "focus".
+
+    Tabele baze: :model:`materials.Sacuvano`
+                 :model:`materials.Skripta`
+                 :model:`accounts.Korisnik`
+
+    Template: :template:`materials/saved_scripts.html`
+    """
     user_id = request.session.get('user_id')
     korisnik = Korisnik.objects.get(idkor=user_id)
 

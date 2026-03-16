@@ -1,3 +1,6 @@
+'''
+Authors: Milutin Jovanović 0385/2022 i Jaksa Jezdić 0543/2022
+'''
 """
 TESTOVI ZA MATERIALS APP — Skriptica projekat
 =============================================
@@ -7,7 +10,7 @@ Podeljeno u dve klase:
   - MaterialManagementTests  → dodavanje, pregled i čuvanje skripti
   - MaterialDiscoveryTests   → modeli, pretraga, autocomplete
 """
-
+from django.test import TestCase, RequestFactory
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User

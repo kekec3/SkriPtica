@@ -1,3 +1,6 @@
+'''
+Authors: Andrej Praizović 0300/2022 i Jaksa Jezdić 0543/2022
+'''
 """
 URL configuration for Skriptica project.
 

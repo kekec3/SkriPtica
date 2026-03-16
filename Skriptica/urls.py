@@ -21,8 +21,10 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 urlpatterns = [
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('materials/', include('materials.urls')),
     path('ai_services/', include('ai_services.urls')),
+    path('', RedirectView.as_view(url='/materials/search/', permanent=True)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

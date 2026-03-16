@@ -1,3 +1,6 @@
+'''
+Authors: Andrej Praizović 0300/2022 i Milutin Jovanović 0385/2022
+'''
 """
 URL configuration for Skriptica project.
 
@@ -25,7 +28,6 @@ urlpatterns = [
     path('login/', views.login, name='login'),
 
     path('profile/', views.profile, name='profile'),
-    path('login/', views.login, name='login'),
 
     path('moderator/', views.moderator_dashboard, name='moderator_dashboard'),
 
@@ -42,6 +44,7 @@ urlpatterns = [
     path('profile/delete/<int:script_id>', views.delete_my_script, name='delete_my_script'),
 
     path('profile/update/<int:script_id>', views.update_my_script, name='update_my_script'),
+
     path('promote_to_moderator/<int:user_id>/', views.promote_to_moderator, name='promote_to_moderator'),
 
     path('demote_to_user/<int:user_id>/', views.demote_to_user, name='demote_to_user'),

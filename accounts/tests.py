@@ -1,3 +1,6 @@
+'''
+Author: Jaks Jezdić 0543/2022 i Milutin Jovanović 0385/2022
+'''
 """
 TESTOVI ZA ACCOUNTS APP — Skriptica projekat
 =============================================
@@ -10,6 +13,7 @@ Obuhvata:
                demote_to_user)
   - Permisije (ko sme šta da vidi/radi)
 """
+from django.test import TestCase, RequestFactory
 from django.db import connection
 from django.test import TestCase, Client
 from django.urls import reverse
