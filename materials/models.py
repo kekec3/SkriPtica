@@ -61,6 +61,6 @@ class Sacuvano(models.Model):
     kolekcija = models.CharField(db_column='Kolekcija', max_length=18, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'sacuvano'
         unique_together = (('idkor', 'idskr'),)
