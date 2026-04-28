@@ -33,9 +33,9 @@ Intuitive interface for uploading and sharing new scripts and materials.
 
 ### Material Library
 ![Material Details 1](screenshots/Material1.png)
+![Material Details 2](screenshots/Materila2.png)
 Browse and view detailed information about shared materials.
 
-![Material Details 2](screenshots/Materila2.png)
 Explore additional material resources and descriptions.
 
 ### AI Tools
@@ -130,12 +130,6 @@ Provides AI-powered features for script analysis and learning assistance.
 
 ### Skriptica (Main Project)
 Contains Django project configuration and global settings.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to fork the repository and submit pull requests to improve the platform.
 
 ---
 
